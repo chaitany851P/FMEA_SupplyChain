@@ -64,15 +64,14 @@ class FMEAEvaluator:
             self.config = {'model': {}, 'prompts': {}}
             
         # Initialize LLM extractor
+        self.extractor = MockLLMExtractor(self.config)
         try:
             if LLM_AVAILABLE:
-                self.extractor = LLMExtractor(self.config)
-            else:
-                self.extractor = MockLLMExtractor(self.config)
-        except Exception as e:
-            print(f"Warning: Could not initialize LLMExtractor: {e}")
-            print("Evaluation will use rule-based extraction only")
-            self.extractor = MockLLMExtractor(self.config)
+                try:
+                    self.extractor = LLMExtractor(self.config)
+                except Exception as e:
+                    print(f"Warning: Could not initialize LLMExtractor: {e}")
+                    print("Evaluation will use rule-based extraction only")
     
     def evaluate_extraction(self, input_text: str, expected: Dict[str, str]) -> Dict:
         """
